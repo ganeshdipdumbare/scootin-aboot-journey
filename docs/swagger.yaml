@@ -1,0 +1,159 @@
+basePath: '{{.BasePath}}'
+definitions:
+  rest.beginTripRequest:
+    properties:
+      scooter_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - scooter_id
+    - user_id
+    type: object
+  rest.beginTripResponse:
+    properties:
+      scooter_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  rest.errorRespose:
+    properties:
+      errorMessage:
+        type: string
+    type: object
+  rest.geoLocation:
+    properties:
+      latitude:
+        type: number
+      longitude:
+        type: number
+    type: object
+  rest.getAvailableScootersResponse:
+    properties:
+      scooters:
+        items:
+          $ref: '#/definitions/rest.scooter'
+        type: array
+    type: object
+  rest.scooter:
+    properties:
+      current_user_id:
+        type: string
+      id:
+        type: string
+      is_available:
+        type: boolean
+      location:
+        $ref: '#/definitions/rest.geoLocation'
+        type: object
+      name:
+        type: string
+    type: object
+host: '{{.Host}}'
+info:
+  contact: {}
+  description: A REST server to manage scooter trips and scooter events
+  license: {}
+  title: Scootin Aboot Journey API
+  version: "1.0"
+paths:
+  /auth/user/available-scooters:
+    get:
+      consumes:
+      - application/json
+      description: returns available scooters within given radius sorted by nearest
+        first
+      parameters:
+      - description: latitude
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: longitude
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: radius
+        in: query
+        name: radius
+        required: true
+        type: integer
+      - description: api_key
+        in: query
+        name: api_key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.getAvailableScootersResponse'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.errorRespose'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest.errorRespose'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.errorRespose'
+            type: object
+      summary: returns available scooters
+      tags:
+      - user-api
+  /auth/user/begin-trip:
+    put:
+      consumes:
+      - application/json
+      description: begins the trip for given user with given scooter, scooter becomes
+        unavailable for other users once the trip begins
+      parameters:
+      - description: begin trip request
+        in: body
+        name: beginTripRequest
+        required: true
+        schema:
+          $ref: '#/definitions/rest.beginTripRequest'
+          type: object
+      - description: api_key
+        in: query
+        name: api_key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.beginTripResponse'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.errorRespose'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest.errorRespose'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.errorRespose'
+            type: object
+      summary: begins the trip
+      tags:
+      - user-api
+swagger: "2.0"

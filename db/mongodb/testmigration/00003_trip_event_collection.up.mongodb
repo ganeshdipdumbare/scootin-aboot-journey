@@ -1,0 +1,18 @@
+[
+    {
+        "insert":"trip_event",
+        "documents":[
+            {
+                "_id":{"$oid":"55cba2476c522cafdb053add"},
+                "id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
+                "location":{
+                    "coordinates":[-73.856077,40.848447],
+                    "type":"Point"
+                },
+                "user_id":{"$oid":"55cba2476c522cafdb053ad1"}, 
+	            "scooter_id":{"$oid":"55cba2476c522cafdb053ad2"}, 
+	            "type":"trip_start"
+            }
+        ]
+    }
+]

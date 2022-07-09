@@ -1,0 +1,22 @@
+[
+    {
+        "insert":"user",
+        "documents":[
+            {
+                "_id":{"$oid":"62c857a4cf8be7f22f19f0d6"},
+                "id":"f3b9842c-182a-418b-92fd-95d4f46414c5",
+                "name":"User 1"
+            },
+            {
+                "_id":{"$oid":"62c857ababd237156dbba468"},
+                "id":"6124edb7-5099-4147-87e6-0c9b93cd1fdb",
+                "name":"User 2"
+            },
+            {
+                "_id":{"$oid":"62c857af0edf61477bc97184"},
+                "id":"4668a2f7-c498-4e49-a82e-380c1ede0685",
+                "name":"User 3"
+            }
+        ]
+    }
+]

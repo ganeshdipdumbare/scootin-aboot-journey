@@ -1,0 +1,37 @@
+[
+    {
+        "insert":"scooter",
+        "documents":[
+            {
+                "_id":{"$oid":"55cba2476c522cafdb053add"},
+                "id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
+                "location":{
+                    "coordinates":[-73.856077,40.848447],
+                    "type":"Point"
+                },
+                "name":"Scooter 1",
+                "is_available":true
+            },
+            {
+                "_id":{"$oid":"55cba2476c522cafdb053ade"},
+                "id":"10f8cfb7-7764-4b75-acca-cc17d2b07d59",
+                "location":{
+                    "coordinates":[-73.961704,40.662942],
+                    "type":"Point"
+                },
+                "name":"Scooter 2",
+                "is_available":true
+            },
+            {
+                "_id":{"$oid":"55cba2476c522cafdb053adf"},
+                "id":"9360f883-cf55-421e-b21a-1752167f5221",
+                "location":{
+                    "coordinates":[-73.98241999999999,40.579505],
+                    "type":"Point"
+                },
+                "name":"Scooter 3",
+                "is_available":true
+            }
+        ]
+    }
+]

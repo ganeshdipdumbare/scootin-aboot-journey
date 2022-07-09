@@ -1,0 +1,21 @@
+[{
+  "createIndexes": "scooter",
+  "indexes": [
+    {
+      "key": {
+        "id": 1
+      },
+      "name": "id",
+      "background": true,
+      "unique":true
+    },
+    {
+      "key": {
+        "location" : "2dsphere"
+      },
+      "name" : "location_2dsphere",
+		  "2dsphereIndexVersion" : 3,
+      "background": true
+    }
+  ]
+}]
