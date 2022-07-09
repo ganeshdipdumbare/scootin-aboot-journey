@@ -2,7 +2,7 @@
 
 <img align="right" width="180px" src="https://raw.githubusercontent.com/swaggo/swag/master/assets/swaggo.png">
 
-# Scootin Aboot Journey API
+# Scootin Aboot Journey Service
 
 The Scootin Aboot Journey API micro-service allows user to fetch nearby scooters and allow them to start and end trips.
 
@@ -13,7 +13,6 @@ The Scootin Aboot Journey API micro-service allows user to fetch nearby scooters
     - [Use cases](#use-cases)
     - [API Operation](#api-operation)
     - [Technical details](#technical-details)
-- [Improvements](#improvements)
 
 ## Prerequisite
 
