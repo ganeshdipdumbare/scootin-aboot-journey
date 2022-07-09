@@ -1,8 +1,10 @@
 package rest
 
 import (
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/ganeshdipdumbare/scootin-aboot-journey/app"
@@ -140,6 +142,115 @@ func (suite *HandlerTestSuite) Test_getAvailableScooters() {
 
 			if tt.want.statusCode != w.Code {
 				t.Errorf("getAvailableScooters() status code  = %v, want status code %v", w.Code, tt.want.statusCode)
+				return
+			}
+		})
+	}
+}
+
+func (suite *HandlerTestSuite) Test_beginTrip() {
+	t := suite.T()
+	appInstance := suite.App
+	api := &apiDetails{
+		app:    appInstance,
+		apiKey: "testkey",
+	}
+	router := api.setupRouter()
+	beginTripApiPath := "/api/v1/auth/user/begin-trip"
+
+	type args struct {
+		url  string
+		body io.Reader
+	}
+	type want struct {
+		statusCode int
+	}
+	tests := []struct {
+		name    string
+		prepare func()
+		args    args
+		want    want
+	}{
+		{
+			name:    "should return error for invalid api key",
+			prepare: func() {},
+			args: args{
+				url: beginTripApiPath + "?api_key=invalid",
+			},
+			want: want{
+				statusCode: http.StatusUnauthorized,
+			},
+		},
+		{
+			name:    "should return error for invalid body param",
+			prepare: func() {},
+			args: args{
+				url: beginTripApiPath + "?api_key=testkey",
+				body: strings.NewReader(`{
+					"scooter_id":"invalidid",
+					"user_id":"invalidid"
+				}`),
+			},
+			want: want{
+				statusCode: http.StatusBadRequest,
+			},
+		},
+		{
+			name:    "should return error for invalid body param type",
+			prepare: func() {},
+			args: args{
+				url: beginTripApiPath + "?api_key=testkey",
+				body: strings.NewReader(`{
+					"scooter_id":1,
+					"user_id":"invalidid"
+				}`),
+			},
+			want: want{
+				statusCode: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "should return error if app BeginTrip returns error",
+			prepare: func() {
+				appInstance.EXPECT().BeginTrip(gomock.Any(), gomock.Any(), gomock.Any()).Return(app.ErrRecordNotFound).Times(1)
+			},
+			args: args{
+				url: beginTripApiPath + "?api_key=testkey",
+				body: strings.NewReader(`{
+					"scooter_id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
+					"user_id":"f3b9842c-182a-418b-92fd-95d4f46414c5"
+				}`),
+			},
+			want: want{
+				statusCode: http.StatusNotFound,
+			},
+		},
+		{
+			name: "should return success if app BeginTrip returns success",
+			prepare: func() {
+				appInstance.EXPECT().BeginTrip(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
+			},
+			args: args{
+				url: beginTripApiPath + "?api_key=testkey",
+				body: strings.NewReader(`{
+					"scooter_id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
+					"user_id":"f3b9842c-182a-418b-92fd-95d4f46414c5"
+				}`),
+			},
+			want: want{
+				statusCode: http.StatusOK,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.prepare()
+			w := httptest.NewRecorder()
+			req, _ := http.NewRequest(http.MethodPut, tt.args.url, tt.args.body)
+			router.ServeHTTP(w, req)
+
+			if tt.want.statusCode != w.Code {
+				t.Errorf("beginTrip() status code  = %v, want status code %v", w.Code, tt.want.statusCode)
 				return
 			}
 		})

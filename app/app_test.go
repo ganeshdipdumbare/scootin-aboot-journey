@@ -379,3 +379,196 @@ func (suite *AppTestSuite) TestBeginTrip() {
 		})
 	}
 }
+
+func (suite *AppTestSuite) TestEndTrip() {
+	t := suite.T()
+	database := suite.Database
+	ctx := context.Background()
+
+	type fields struct {
+		database db.DB
+	}
+	type args struct {
+		ctx       context.Context
+		userID    string
+		scooterID string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		prepare func()
+		wantErr bool
+	}{
+		{
+			name: "should return error for empty userID",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "",
+				scooterID: "scooterid",
+			},
+			prepare: func() {},
+			wantErr: true,
+		},
+		{
+			name: "should return error for empty scooterID",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "",
+			},
+			prepare: func() {},
+			wantErr: true,
+		},
+		{
+			name: "should return error if scooter not found",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "scooterid",
+			},
+			prepare: func() {
+				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(nil, db.ErrRecordNotFound).Times(1)
+			},
+			wantErr: true,
+		},
+		{
+			name: "should return error if db error while fetching scooter by id",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "scooterid",
+			},
+			prepare: func() {
+				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(nil, errors.New("internal error")).Times(1)
+			},
+			wantErr: true,
+		},
+		{
+			name: "should return error if scooter is unavailable",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "scooterid",
+			},
+			prepare: func() {
+				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(&domain.Scooter{
+					ID:            "scooterid",
+					Name:          "scooter 1",
+					Location:      domain.GeoLocation{},
+					CurrentUserID: nil,
+					IsAvailable:   false,
+				}, nil).Times(1)
+			},
+			wantErr: true,
+		},
+		{
+			name: "should return error if update scooter failed",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "scooterid",
+			},
+			prepare: func() {
+				userID := "userid"
+				currentScooter := &domain.Scooter{
+					ID:            "scooterid",
+					Name:          "scooter 1",
+					Location:      domain.GeoLocation{},
+					CurrentUserID: &userID,
+					IsAvailable:   false,
+				}
+				gomock.InOrder(
+					database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(currentScooter, nil).Times(1),
+					database.EXPECT().UpdateScooter(ctx, gomock.Any()).Return(nil, errors.New("internal error")).Times(1),
+				)
+			},
+			wantErr: true,
+		},
+		{
+			name: "should return error scooter is already available",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "scooterid",
+			},
+			prepare: func() {
+				currentScooter := &domain.Scooter{
+					ID:            "scooterid",
+					Name:          "scooter 1",
+					Location:      domain.GeoLocation{},
+					CurrentUserID: nil,
+					IsAvailable:   true,
+				}
+
+				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(currentScooter, nil).Times(1)
+
+			},
+			wantErr: true,
+		},
+		{
+			name: "should return success if trip is ended successfully",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:       ctx,
+				userID:    "userid",
+				scooterID: "scooterid",
+			},
+			prepare: func() {
+				userID := "userid"
+				currentScooter := &domain.Scooter{
+					ID:            "scooterid",
+					Name:          "scooter 1",
+					Location:      domain.GeoLocation{},
+					CurrentUserID: &userID,
+					IsAvailable:   false,
+				}
+
+				emptyUserID := ""
+				updatedScooter := *currentScooter
+				updatedScooter.CurrentUserID = &emptyUserID
+				updatedScooter.IsAvailable = true
+
+				gomock.InOrder(
+					database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(currentScooter, nil).Times(1),
+					database.EXPECT().UpdateScooter(ctx, &updatedScooter).Return(&updatedScooter, nil).Times(1),
+				)
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.prepare()
+			a := &appDetails{
+				database: tt.fields.database,
+			}
+			if err := a.EndTrip(tt.args.ctx, tt.args.userID, tt.args.scooterID); (err != nil) != tt.wantErr {
+				t.Errorf("appDetails.EndTrip() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

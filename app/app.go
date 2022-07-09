@@ -21,6 +21,7 @@ var (
 type App interface {
 	GetNearbyAvailableScooters(ctx context.Context, location domain.GeoLocation, radius int) ([]domain.Scooter, error)
 	BeginTrip(ctx context.Context, userID string, scooterID string) error
+	EndTrip(ctx context.Context, userID string, scooterID string) error
 }
 
 type appDetails struct {
@@ -91,6 +92,47 @@ func (a *appDetails) BeginTrip(ctx context.Context, userID string, scooterID str
 	currentUserID := userID
 	updatedScooter.CurrentUserID = &currentUserID
 	updatedScooter.IsAvailable = false
+
+	_, err = a.database.UpdateScooter(ctx, &updatedScooter)
+	if err != nil {
+		return fmt.Errorf("unable to update scooter: %w", err)
+	}
+
+	return nil
+}
+
+// EndTrip ends the trip for given user with given scooter
+// scooter record is updated with blank user and set to available
+// returns error if scooter is already available
+func (a *appDetails) EndTrip(ctx context.Context, userID string, scooterID string) error {
+	if userID == "" {
+		return fmt.Errorf("userID: %w", ErrEmptyArg)
+	}
+
+	if scooterID == "" {
+		return fmt.Errorf("scooterID: %w", ErrEmptyArg)
+	}
+
+	scooter, err := a.database.GetScooterByID(ctx, scooterID)
+	if err != nil {
+		if errors.Is(err, db.ErrRecordNotFound) {
+			return fmt.Errorf("scooter not found: %w", ErrRecordNotFound)
+		}
+		return fmt.Errorf("unable to get scooter: %w", err)
+	}
+
+	if scooter.IsAvailable {
+		return fmt.Errorf("scooter is available: %w", ErrOperationNotAllowed)
+	}
+
+	if scooter.CurrentUserID == nil || *scooter.CurrentUserID != userID {
+		return fmt.Errorf("scooter is used by other user: %w", ErrOperationNotAllowed)
+	}
+
+	updatedScooter := *scooter
+	currentUserID := ""
+	updatedScooter.CurrentUserID = &currentUserID
+	updatedScooter.IsAvailable = true
 
 	_, err = a.database.UpdateScooter(ctx, &updatedScooter)
 	if err != nil {

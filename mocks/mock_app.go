@@ -49,6 +49,20 @@ func (mr *MockAppMockRecorder) BeginTrip(arg0, arg1, arg2 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BeginTrip", reflect.TypeOf((*MockApp)(nil).BeginTrip), arg0, arg1, arg2)
 }
 
+// EndTrip mocks base method.
+func (m *MockApp) EndTrip(arg0 context.Context, arg1, arg2 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EndTrip", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// EndTrip indicates an expected call of EndTrip.
+func (mr *MockAppMockRecorder) EndTrip(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EndTrip", reflect.TypeOf((*MockApp)(nil).EndTrip), arg0, arg1, arg2)
+}
+
 // GetNearbyAvailableScooters mocks base method.
 func (m *MockApp) GetNearbyAvailableScooters(arg0 context.Context, arg1 domain.GeoLocation, arg2 int) ([]domain.Scooter, error) {
 	m.ctrl.T.Helper()
