@@ -92,15 +92,15 @@ curl -X 'POST' \
 
 ## Technical details
 - The service is written using clean code architecture which makes it modular and easy to maintain and test. These are the following layers  -
-    - domain - Inner most layer, no external dependencies
-    - app - consists of main business logic, dependent on domain only (must have 100% test coverage)
-    - db - consists of db interface which provides db functions
+    - **domain** - Inner most layer, no external dependencies
+    - **app** - consists of main business logic, dependent on domain only (must have 100% test coverage)
+    - **db** - consists of db interface which provides db functions
         - URL - localhost:27017
         - DB - scootin-aboot-db
         - Scooter Collection - `scooter` created during migration at the start of service stores scooter records.
         - User Collection - `user` created during migration at the start of the service stores user records.
         - Trip Event Collection - `trip_event` created when the first record is created by scooter.
-    - config - consists of functions crucial to start the service
-    - migration - consists of files used in migration.
-    - api - the layer is used to communicate with the service. The new APIs like grpc or graphQL can be implemented in this layer by keeping other layers intact.
+    - **config** - consists of functions crucial to start the service
+    - **migration** - consists of files used in migration.
+    - **api** - the layer is used to communicate with the service. The new APIs like grpc or graphQL can be implemented in this layer by keeping other layers intact.
 - The sample scooter data and user data is created with the migration.
