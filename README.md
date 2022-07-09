@@ -40,7 +40,7 @@ The microservice is used to fetch nearby available scooters and start and end tr
 ## Use cases
 1. User is able to fetch nearby available scooters within the given radius. Please note that this works with real data only.
 2. User is able to start a trip with available scooter by passing `scooter id` and `user id`. If the scooter is already in use, then the api returns error.
-3. User is able to stop his trip which he/she has started already.
+3. User is able to stop his/her trip which he/she has started already.
 4. The scooter is used to save the events generated during the trip. e.g. trip_start, trip_end and trip_location_update by passing the scooter id, user id, location and time.
 
 ## API Operation
@@ -103,4 +103,4 @@ curl -X 'POST' \
     - config - consists of functions crucial to start the service
     - migration - consists of files used in migration.
     - api - the layer is used to communicate with the service. The new APIs like grpc or graphQL can be implemented in this layer by keeping other layers intact.
-- The sample scooter data and user data is created with migration.
+- The sample scooter data and user data is created with the migration.
