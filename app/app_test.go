@@ -374,7 +374,7 @@ func (suite *AppTestSuite) TestBeginTrip() {
 			}
 			tt.prepare()
 			if err := a.BeginTrip(tt.args.ctx, tt.args.userID, tt.args.scooterID); (err != nil) != tt.wantErr {
-				t.Errorf("appDetails.BeginTrip() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BeginTrip() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -567,7 +567,68 @@ func (suite *AppTestSuite) TestEndTrip() {
 				database: tt.fields.database,
 			}
 			if err := a.EndTrip(tt.args.ctx, tt.args.userID, tt.args.scooterID); (err != nil) != tt.wantErr {
-				t.Errorf("appDetails.EndTrip() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("EndTrip() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func (suite *AppTestSuite) TestSaveScooterTripEvent() {
+	t := suite.T()
+	database := suite.Database
+	ctx := context.Background()
+
+	type fields struct {
+		database db.DB
+	}
+	type args struct {
+		ctx   context.Context
+		event *domain.TripEvent
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		prepare func()
+		wantErr bool
+	}{
+		{
+			name: "should return error if insert into trip event fails",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:   ctx,
+				event: &domain.TripEvent{},
+			},
+			prepare: func() {
+				database.EXPECT().InsertTripEvent(ctx, gomock.Any()).Return(db.ErrInvalidArg).Times(1)
+			},
+			wantErr: true,
+		},
+		{
+			name: "should return success if insert into trip event is succeded",
+			fields: fields{
+				database: database,
+			},
+			args: args{
+				ctx:   ctx,
+				event: &domain.TripEvent{},
+			},
+			prepare: func() {
+				database.EXPECT().InsertTripEvent(ctx, gomock.Any()).Return(nil).Times(1)
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.prepare()
+			a := &appDetails{
+				database: tt.fields.database,
+			}
+			if err := a.SaveScooterTripEvent(tt.args.ctx, tt.args.event); (err != nil) != tt.wantErr {
+				t.Errorf("SaveScooterTripEvent() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

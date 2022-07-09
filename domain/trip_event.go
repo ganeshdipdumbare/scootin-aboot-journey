@@ -19,3 +19,7 @@ type TripEvent struct {
 	Type      TripEventType
 	CreatedAt time.Time
 }
+
+func IsValidTripEventType(eventType string) bool {
+	return eventType == string(TripStartEvent) || eventType == string(TripStopEvent) || eventType == string(TripLocationUpdateEvent)
+}

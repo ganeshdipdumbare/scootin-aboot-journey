@@ -77,3 +77,17 @@ func (mr *MockAppMockRecorder) GetNearbyAvailableScooters(arg0, arg1, arg2 inter
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNearbyAvailableScooters", reflect.TypeOf((*MockApp)(nil).GetNearbyAvailableScooters), arg0, arg1, arg2)
 }
+
+// SaveScooterTripEvent mocks base method.
+func (m *MockApp) SaveScooterTripEvent(arg0 context.Context, arg1 *domain.TripEvent) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveScooterTripEvent", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveScooterTripEvent indicates an expected call of SaveScooterTripEvent.
+func (mr *MockAppMockRecorder) SaveScooterTripEvent(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveScooterTripEvent", reflect.TypeOf((*MockApp)(nil).SaveScooterTripEvent), arg0, arg1)
+}
