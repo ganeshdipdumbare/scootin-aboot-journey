@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+  scootin-aboot-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URI=mongodb://database:27017
+      - PORT=8080
+      - API_KEY=secretkey
+    restart: on-failure
+    depends_on:
+      - database
+    links:
+      - "database"

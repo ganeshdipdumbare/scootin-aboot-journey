@@ -161,7 +161,7 @@ paths:
         name: longitude
         required: true
         type: number
-      - description: radius
+      - description: radius(in meters)
         in: query
         name: radius
         required: true

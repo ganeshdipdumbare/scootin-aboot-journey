@@ -133,7 +133,7 @@ func (api *apiDetails) setupRouter() *gin.Engine {
 // @Produce  json
 // @Param latitude query number true "latitude"
 // @Param longitude query number true "longitude"
-// @Param radius query integer true "radius"
+// @Param radius query integer true "radius(in meters)"
 // @Param api_key query string true "api_key"
 // @Success 200 {object} rest.getAvailableScootersResponse
 // @Failure 404 {object} rest.errorRespose

@@ -104,7 +104,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "radius",
+                        "description": "radius(in meters)",
                         "name": "radius",
                         "in": "query",
                         "required": true
