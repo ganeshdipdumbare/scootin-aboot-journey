@@ -1,4 +1,4 @@
-[![Go](https://github.com/ganeshdipdumbare/gymondo-subscription/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/ganeshdipdumbare/gymondo-subscription/actions/workflows/go.yml)
+[![Go](https://github.com/ganeshdipdumbare/scootin-aboot-journey/actions/workflows/go.yml/badge.svg)](https://github.com/ganeshdipdumbare/scootin-aboot-journey/actions/workflows/go.yml)
 
 <img align="right" width="180px" src="https://raw.githubusercontent.com/swaggo/swag/master/assets/swaggo.png">
 
