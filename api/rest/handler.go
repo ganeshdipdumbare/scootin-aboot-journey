@@ -310,7 +310,7 @@ func (api *apiDetails) saveScooterTripEvent(c *gin.Context) {
 	}
 
 	if !domain.IsValidTripEventType(req.Type) {
-		createErrorResponse(c, http.StatusBadRequest, "invalid event type")
+		createErrorResponse(c, http.StatusBadRequest, "invalid event type, valid values: trip_start,trip_stop and trip_location_update")
 		return
 	}
 
