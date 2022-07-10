@@ -392,6 +392,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 		ctx       context.Context
 		userID    string
 		scooterID string
+		location  domain.GeoLocation
 	}
 	tests := []struct {
 		name    string
@@ -409,6 +410,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {},
 			wantErr: true,
@@ -422,6 +424,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {},
 			wantErr: true,
@@ -435,6 +438,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {
 				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(nil, db.ErrRecordNotFound).Times(1)
@@ -450,6 +454,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {
 				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(nil, errors.New("internal error")).Times(1)
@@ -465,6 +470,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {
 				database.EXPECT().GetScooterByID(ctx, gomock.Any()).Return(&domain.Scooter{
@@ -486,6 +492,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {
 				userID := "userid"
@@ -512,6 +519,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {
 				currentScooter := &domain.Scooter{
@@ -536,6 +544,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 				ctx:       ctx,
 				userID:    "userid",
 				scooterID: "scooterid",
+				location:  domain.GeoLocation{},
 			},
 			prepare: func() {
 				userID := "userid"
@@ -566,7 +575,7 @@ func (suite *AppTestSuite) TestEndTrip() {
 			a := &appDetails{
 				database: tt.fields.database,
 			}
-			if err := a.EndTrip(tt.args.ctx, tt.args.userID, tt.args.scooterID); (err != nil) != tt.wantErr {
+			if err := a.EndTrip(tt.args.ctx, tt.args.userID, tt.args.scooterID, tt.args.location); (err != nil) != tt.wantErr {
 				t.Errorf("EndTrip() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

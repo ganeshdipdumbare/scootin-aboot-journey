@@ -2,7 +2,6 @@ package rest
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -33,8 +32,8 @@ type scooter struct {
 }
 
 type geoLocation struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude" validate:"required,required_with=Longitude,latitude"`
+	Longitude float64 `json:"longitude" validate:"required,required_with=Latitude,longitude"`
 }
 
 type beginTripRequest struct {
@@ -48,13 +47,15 @@ type beginTripResponse struct {
 }
 
 type endTripRequest struct {
-	UserID    string `json:"user_id" validate:"required,uuid4"`
-	ScooterID string `json:"scooter_id" validate:"required,uuid4"`
+	UserID    string      `json:"user_id" validate:"required,uuid4"`
+	ScooterID string      `json:"scooter_id" validate:"required,uuid4"`
+	Location  geoLocation `json:"location" validate:"required"`
 }
 
 type endTripResponse struct {
-	UserID    string `json:"user_id"`
-	ScooterID string `json:"scooter_id"`
+	UserID    string      `json:"user_id"`
+	ScooterID string      `json:"scooter_id"`
+	Location  geoLocation `json:"location"`
 }
 
 type saveScooterTripEventRequest struct {
@@ -92,7 +93,6 @@ func createErrorResponse(c *gin.Context, code int, message string) {
 
 func (api *apiDetails) authenticate(c *gin.Context) {
 	apiKey := c.Query("api_key")
-	fmt.Println("middleware: ", apiKey, api.apiKey)
 	if apiKey != api.apiKey {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
@@ -241,7 +241,7 @@ func (api *apiDetails) beginTrip(c *gin.Context) {
 
 // endTrip godoc
 // @Summary ends the trip
-// @Description ends the trip for given user with given scooter, scooter becomes available for other users once the trip ends
+// @Description ends the trip for given user with given scooter, scooter becomes available for other users once the trip ends. The scooter location is updated with current location.
 // @Tags user-api
 // @Accept  json
 // @Produce  json
@@ -266,7 +266,11 @@ func (api *apiDetails) endTrip(c *gin.Context) {
 		return
 	}
 
-	err = api.app.EndTrip(c, req.UserID, req.ScooterID)
+	location := domain.GeoLocation{
+		Latitude:  req.Location.Latitude,
+		Longitude: req.Location.Longitude,
+	}
+	err = api.app.EndTrip(c, req.UserID, req.ScooterID, location)
 	if err != nil {
 		errStatusCode := getErrHTTPStatusCode(err)
 		createErrorResponse(c, errStatusCode, err.Error())

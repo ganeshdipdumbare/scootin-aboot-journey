@@ -215,7 +215,7 @@
         },
         "/auth/user/end-trip": {
             "put": {
-                "description": "ends the trip for given user with given scooter, scooter becomes available for other users once the trip ends",
+                "description": "ends the trip for given user with given scooter, scooter becomes available for other users once the trip ends. The scooter location is updated with current location.",
                 "consumes": [
                     "application/json"
                 ],
@@ -312,6 +312,10 @@
                 "user_id"
             ],
             "properties": {
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/rest.geoLocation"
+                },
                 "scooter_id": {
                     "type": "string"
                 },
@@ -323,6 +327,10 @@
         "rest.endTripResponse": {
             "type": "object",
             "properties": {
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/rest.geoLocation"
+                },
                 "scooter_id": {
                     "type": "string"
                 },
@@ -341,6 +349,10 @@
         },
         "rest.geoLocation": {
             "type": "object",
+            "required": [
+                "latitude",
+                "longitude"
+            ],
             "properties": {
                 "latitude": {
                     "type": "number"

@@ -297,7 +297,11 @@ func (suite *HandlerTestSuite) Test_endTrip() {
 				url: endTripApiPath + "?api_key=testkey",
 				body: strings.NewReader(`{
 					"scooter_id":"invalidid",
-					"user_id":"invalidid"
+					"user_id":"invalidid",
+					"location": {
+						"latitude": -73.856077,
+						"longitude": 40.848447
+					}
 				}`),
 			},
 			want: want{
@@ -311,7 +315,11 @@ func (suite *HandlerTestSuite) Test_endTrip() {
 				url: endTripApiPath + "?api_key=testkey",
 				body: strings.NewReader(`{
 					"scooter_id":1,
-					"user_id":"invalidid"
+					"user_id":"invalidid",
+					"location": {
+						"latitude": -73.856077,
+						"longitude": 40.848447
+					}
 				}`),
 			},
 			want: want{
@@ -321,13 +329,17 @@ func (suite *HandlerTestSuite) Test_endTrip() {
 		{
 			name: "should return error if app EndTrip returns error",
 			prepare: func() {
-				appInstance.EXPECT().EndTrip(gomock.Any(), gomock.Any(), gomock.Any()).Return(app.ErrRecordNotFound).Times(1)
+				appInstance.EXPECT().EndTrip(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(app.ErrRecordNotFound).Times(1)
 			},
 			args: args{
 				url: endTripApiPath + "?api_key=testkey",
 				body: strings.NewReader(`{
 					"scooter_id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
-					"user_id":"f3b9842c-182a-418b-92fd-95d4f46414c5"
+					"user_id":"f3b9842c-182a-418b-92fd-95d4f46414c5",
+					"location": {
+						"latitude": -73.856077,
+						"longitude": 40.848447
+					}
 				}`),
 			},
 			want: want{
@@ -337,13 +349,17 @@ func (suite *HandlerTestSuite) Test_endTrip() {
 		{
 			name: "should return success if app EndTrip returns success",
 			prepare: func() {
-				appInstance.EXPECT().EndTrip(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
+				appInstance.EXPECT().EndTrip(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
 			args: args{
 				url: endTripApiPath + "?api_key=testkey",
 				body: strings.NewReader(`{
 					"scooter_id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
-					"user_id":"f3b9842c-182a-418b-92fd-95d4f46414c5"
+					"user_id":"f3b9842c-182a-418b-92fd-95d4f46414c5",
+					"location": {
+						"latitude": -73.856077,
+						"longitude": 40.848447
+					}
 				}`),
 			},
 			want: want{
@@ -447,8 +463,8 @@ func (suite *HandlerTestSuite) Test_saveScooterTripEvent() {
 				body: strings.NewReader(`{
 					"created_at": "2022-07-09T17:49:09+00:00",
 					"location": {
-					  "latitude": 0,
-					  "longitude": 0
+						"latitude": -73.856077,
+						"longitude": 40.848447
 					},
 					"scooter_id": "f691fd32-9b3f-4d71-b9b7-c48213bfd232",
 					"type": "invalid",
@@ -469,8 +485,8 @@ func (suite *HandlerTestSuite) Test_saveScooterTripEvent() {
 				body: strings.NewReader(`{
 					"created_at": "2022-07-09T17:49:09+00:00",
 					"location": {
-					  "latitude": 0,
-					  "longitude": 0
+					  "latitude": -73.856077,
+					  "longitude": 40.848447
 					},
 					"scooter_id": "f691fd32-9b3f-4d71-b9b7-c48213bfd232",
 					"type": "trip_start",
@@ -491,8 +507,8 @@ func (suite *HandlerTestSuite) Test_saveScooterTripEvent() {
 				body: strings.NewReader(`{
 					"created_at": "2022-07-09T17:49:09+00:00",
 					"location": {
-					  "latitude": 0,
-					  "longitude": 0
+						"latitude": -73.856077,
+						"longitude": 40.848447
 					},
 					"scooter_id": "f691fd32-9b3f-4d71-b9b7-c48213bfd232",
 					"type": "trip_start",

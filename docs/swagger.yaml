@@ -19,6 +19,9 @@ definitions:
     type: object
   rest.endTripRequest:
     properties:
+      location:
+        $ref: '#/definitions/rest.geoLocation'
+        type: object
       scooter_id:
         type: string
       user_id:
@@ -29,6 +32,9 @@ definitions:
     type: object
   rest.endTripResponse:
     properties:
+      location:
+        $ref: '#/definitions/rest.geoLocation'
+        type: object
       scooter_id:
         type: string
       user_id:
@@ -45,6 +51,9 @@ definitions:
         type: number
       longitude:
         type: number
+    required:
+    - latitude
+    - longitude
     type: object
   rest.getAvailableScootersResponse:
     properties:
@@ -247,7 +256,8 @@ paths:
       consumes:
       - application/json
       description: ends the trip for given user with given scooter, scooter becomes
-        available for other users once the trip ends
+        available for other users once the trip ends. The scooter location is updated
+        with current location.
       parameters:
       - description: end trip request
         in: body

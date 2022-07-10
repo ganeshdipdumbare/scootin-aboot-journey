@@ -6,7 +6,7 @@
                 "_id":{"$oid":"55cba2476c522cafdb053add"},
                 "id":"f691fd32-9b3f-4d71-b9b7-c48213bfd232",
                 "location":{
-                    "coordinates":[-73.856077,40.848447],
+                    "coordinates":[52.54664741862859,13.351253969417021],
                     "type":"Point"
                 },
                 "name":"Scooter 1",
@@ -30,6 +30,16 @@
                     "type":"Point"
                 },
                 "name":"Scooter 3",
+                "is_available":true
+            },
+            {
+                "_id":{"$oid":"62caad937774f3aa771fdf53"},
+                "id":"0c710346-3337-4d49-8be2-2bbb069cb28a",
+                "location":{
+                    "coordinates":[52.54664741862859, 13.351253969417021],
+                    "type":"Point"
+                },
+                "name":"Scooter 4",
                 "is_available":true
             }
         ]

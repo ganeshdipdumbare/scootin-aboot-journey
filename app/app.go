@@ -21,7 +21,7 @@ var (
 type App interface {
 	GetNearbyAvailableScooters(ctx context.Context, location domain.GeoLocation, radius int) ([]domain.Scooter, error)
 	BeginTrip(ctx context.Context, userID string, scooterID string) error
-	EndTrip(ctx context.Context, userID string, scooterID string) error
+	EndTrip(ctx context.Context, userID string, scooterID string, location domain.GeoLocation) error
 	SaveScooterTripEvent(ctx context.Context, event *domain.TripEvent) error
 }
 
@@ -104,8 +104,9 @@ func (a *appDetails) BeginTrip(ctx context.Context, userID string, scooterID str
 
 // EndTrip ends the trip for given user with given scooter
 // scooter record is updated with blank user and set to available
+// scooter location is updated with current location
 // returns error if scooter is already available
-func (a *appDetails) EndTrip(ctx context.Context, userID string, scooterID string) error {
+func (a *appDetails) EndTrip(ctx context.Context, userID string, scooterID string, location domain.GeoLocation) error {
 	if userID == "" {
 		return fmt.Errorf("userID: %w", ErrEmptyArg)
 	}
@@ -134,7 +135,7 @@ func (a *appDetails) EndTrip(ctx context.Context, userID string, scooterID strin
 	currentUserID := ""
 	updatedScooter.CurrentUserID = &currentUserID
 	updatedScooter.IsAvailable = true
-
+	updatedScooter.Location = location
 	_, err = a.database.UpdateScooter(ctx, &updatedScooter)
 	if err != nil {
 		return fmt.Errorf("unable to update scooter: %w", err)

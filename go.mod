@@ -7,6 +7,7 @@ require (
 	github.com/ganeshdipdumbare/goenv v0.0.0-20200518152659-b676dce7f1fd
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/validator/v10 v10.11.0
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/golang/mock v1.6.0
 	github.com/stretchr/testify v1.8.0
