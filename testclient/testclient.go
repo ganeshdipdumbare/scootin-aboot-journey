@@ -39,18 +39,7 @@ type beginTripRequest struct {
 	ScooterID string `json:"scooter_id"`
 }
 
-type beginTripResponse struct {
-	UserID    string `json:"user_id"`
-	ScooterID string `json:"scooter_id"`
-}
-
 type endTripRequest struct {
-	UserID    string      `json:"user_id"`
-	ScooterID string      `json:"scooter_id"`
-	Location  geoLocation `json:"location"`
-}
-
-type endTripResponse struct {
 	UserID    string      `json:"user_id"`
 	ScooterID string      `json:"scooter_id"`
 	Location  geoLocation `json:"location"`
@@ -62,10 +51,6 @@ type saveScooterTripEventRequest struct {
 	Location  geoLocation `json:"location"`
 	CreatedAt time.Time   `json:"created_at"`
 	Type      string      `json:"type"`
-}
-
-type saveScooterTripEventResponse struct {
-	Success bool `json:"success"`
 }
 
 type testClient struct {
@@ -162,17 +147,22 @@ func (tc *testClient) updateLocationDuringTrip(scooterID string) {
 		case <-done:
 			return
 		case <-ticker.C:
-			tc.currentLocation = travelTenMeterNorth(tc.currentLocation)
-			currentLocation := geoLocation{
-				Latitude:  tc.currentLocation.Latitude,
-				Longitude: tc.currentLocation.Longitude,
-			}
-			err := tc.saveTripEvent(scooterID, "trip_location_update", currentLocation)
-			if err != nil {
-				log.Println(err)
-			}
+			tc.travelAndSaveUpdatedLocationEvent(scooterID)
 		}
 	}
+}
+
+func (tc *testClient) travelAndSaveUpdatedLocationEvent(scooterID string) {
+	tc.currentLocation = travelTenMeterNorth(tc.currentLocation)
+	currentLocation := geoLocation{
+		Latitude:  tc.currentLocation.Latitude,
+		Longitude: tc.currentLocation.Longitude,
+	}
+	err := tc.saveTripEvent(scooterID, "trip_location_update", currentLocation)
+	if err != nil {
+		log.Println(err)
+	}
+
 }
 
 func travelTenMeterNorth(currentLocation *domain.GeoLocation) *domain.GeoLocation {
