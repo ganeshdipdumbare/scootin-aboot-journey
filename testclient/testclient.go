@@ -160,7 +160,6 @@ func (tc *testClient) updateLocationDuringTrip(scooterID string) {
 	for {
 		select {
 		case <-done:
-			fmt.Println("trip over!")
 			return
 		case <-ticker.C:
 			tc.currentLocation = travelTenMeterNorth(tc.currentLocation)
