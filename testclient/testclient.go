@@ -90,7 +90,7 @@ type NewTestClientReq struct {
 }
 
 func NewTestClient(req *NewTestClientReq) *testClient {
-	baseURL := fmt.Sprintf("http://localhost:%s/api/v1", req.Port)
+	baseURL := fmt.Sprintf("http://scootin-aboot-app:%s/api/v1", req.Port)
 	restyClient := resty.New()
 	restyClient = restyClient.SetBaseURL(baseURL)
 	return &testClient{
