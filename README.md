@@ -107,4 +107,4 @@ curl -X 'POST' \
     - **config** - consists of functions crucial to start the service
     - **migration** - consists of files used in migration.
     - **api** - the layer is used to communicate with the service. The new APIs like grpc or graphQL can be implemented in this layer by keeping other layers intact.
-- The sample scooter data and user data is created with the migration.
+- The sample scooter data and user data is created with the migration when the service is started.
