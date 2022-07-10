@@ -9,7 +9,8 @@
 6. Scooter sends trip stop event.
 7. The sequence of events getting stored in DB doesnt matter as the time of event creation is sent by client.
 8. Usually only one user/client will try to scan and book the particular scooter and not more tha n one at a time.
+9. User will always move to North by 10m per 3 Secons during trip with scooter.
 
-All the above mentioned assumptions are also considered while implementing test clients.
+All the above mentioned assumptions are also considered while implementing test clients. When service receives stop signal, server stops gracefully although clients are stopped abruptly. 
 
 Also use of MongoDB is considered as it supports Geo spatial data and related operations.
