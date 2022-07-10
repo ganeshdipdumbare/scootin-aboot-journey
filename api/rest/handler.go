@@ -318,13 +318,14 @@ func (api *apiDetails) saveScooterTripEvent(c *gin.Context) {
 		return
 	}
 
+	location := domain.GeoLocation{
+		Latitude:  req.Location.Latitude,
+		Longitude: req.Location.Longitude,
+	}
 	tripEvent := &domain.TripEvent{
 		UserID:    req.UserID,
 		ScooterID: req.ScooterID,
-		Location: domain.GeoLocation{
-			Latitude:  req.Location.Latitude,
-			Longitude: req.Location.Longitude,
-		},
+		Location:  location,
 		Type:      domain.TripEventType(req.Type),
 		CreatedAt: req.CreatedAt.UTC(),
 	}
