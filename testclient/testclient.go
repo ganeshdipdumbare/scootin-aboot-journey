@@ -174,13 +174,15 @@ func travelTenMeterNorth(currentLocation *domain.GeoLocation) *domain.GeoLocatio
 
 // getAvailableScooter returns closest scooter from user's current location
 func (tc *testClient) getAvailableScooter() (string, error) {
+	queryParams := map[string]string{
+		"latitude":  fmt.Sprintf("%f", tc.currentLocation.Latitude),
+		"longitude": fmt.Sprintf("%f", tc.currentLocation.Longitude),
+		"radius":    fmt.Sprintf("%d", tc.radius),
+		"api_key":   tc.apiKey,
+	}
+
 	resp, err := tc.httpClient.R().
-		SetQueryParams(map[string]string{
-			"latitude":  fmt.Sprintf("%f", tc.currentLocation.Latitude),
-			"longitude": fmt.Sprintf("%f", tc.currentLocation.Longitude),
-			"radius":    fmt.Sprintf("%d", tc.radius),
-			"api_key":   tc.apiKey,
-		}).
+		SetQueryParams(queryParams).
 		SetHeader("Accept", "application/json").
 		Get("/auth/user/available-scooters")
 	if err != nil {
@@ -210,11 +212,12 @@ func (tc *testClient) beginTrip(scooterID string) error {
 		UserID:    tc.userID,
 		ScooterID: scooterID,
 	}
-
+	queryParams := map[string]string{
+		"api_key": tc.apiKey,
+	}
 	resp, err := tc.httpClient.R().
-		SetQueryParams(map[string]string{
-			"api_key": tc.apiKey,
-		}).SetBody(beginTripReqBody).
+		SetQueryParams(queryParams).
+		SetBody(beginTripReqBody).
 		SetHeader("Accept", "application/json").
 		Put("/auth/user/begin-trip")
 	if err != nil {
@@ -237,11 +240,12 @@ func (tc *testClient) endTrip(scooterID string, location *domain.GeoLocation) er
 			Longitude: location.Longitude,
 		},
 	}
-
+	queryParams := map[string]string{
+		"api_key": tc.apiKey,
+	}
 	resp, err := tc.httpClient.R().
-		SetQueryParams(map[string]string{
-			"api_key": tc.apiKey,
-		}).SetBody(endTripReqBody).
+		SetQueryParams(queryParams).
+		SetBody(endTripReqBody).
 		SetHeader("Accept", "application/json").
 		Put("/auth/user/end-trip")
 	if err != nil {
@@ -262,11 +266,12 @@ func (tc *testClient) saveTripEvent(scooterID, eventType string, location geoLoc
 		CreatedAt: time.Now().UTC(),
 		Type:      eventType,
 	}
-
+	queryParams := map[string]string{
+		"api_key": tc.apiKey,
+	}
 	resp, err := tc.httpClient.R().
-		SetQueryParams(map[string]string{
-			"api_key": tc.apiKey,
-		}).SetBody(saveTripEventReqBody).
+		SetQueryParams(queryParams).
+		SetBody(saveTripEventReqBody).
 		SetHeader("Accept", "application/json").
 		Post("/auth/scooter/trip-event")
 	if err != nil {
