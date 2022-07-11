@@ -1,7 +1,7 @@
 ## Assumptions
 
 ### Scooter booking assumption as follows - 
-1. User/Mobile client will get the available scooters from his location within given radius. Note that getting scooters within sqare area is confusing.
+1. User/Mobile client will get the available scooters from his location within given radius. Note that getting scooters within square area is confusing.
 2. User scans the QR code which send the BE request to book the scooter/begin trip.
 3. BE system sends notification to scooter along with user id to unlock it.
 4. The scooter sends `trip start event` and starts sending `location update event` along with user id.
